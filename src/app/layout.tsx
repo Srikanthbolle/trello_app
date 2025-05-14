@@ -1,5 +1,7 @@
+// app/layout.tsx (server component by default)
+
 import type { Metadata } from "next";
-import "./globals.css";
+import "./globals.css";import Modal from "../../components/Modal";
 
 
 export const metadata: Metadata = {
@@ -9,14 +11,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body className="bg-[#f5f6f8]"
-      >
+      <body className="bg-[#f5f6f8]">
         {children}
+       
       </body>
     </html>
   );

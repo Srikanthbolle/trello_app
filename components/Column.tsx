@@ -4,6 +4,7 @@ import { Todo, TypedColumn } from "../typings";
 import { PlusCircleIcon } from "@heroicons/react/16/solid";
 import TodoCard from "./TodoCard";
 import { useBoardStore } from "../Store/BoardStore";
+import { useModalStore } from "../Store/ModalStore";
 
 type Props = {
   id: TypedColumn;
@@ -19,6 +20,7 @@ const idToColumnText: { [key in TypedColumn]: string } = {
 
 const Column = ({ id, todos, index }: Props) => {
   const searchString = useBoardStore((state) => state.searchString);
+  const isOpen=useModalStore((state)=>state.isOpen)
 
   return (
     <div className="bg-gray-100 rounded-md p-2 shadow-md">
@@ -64,7 +66,7 @@ const Column = ({ id, todos, index }: Props) => {
             {provided.placeholder}
 
             <div className="flex items-end justify-end p-2">
-              <button className="text-green-500 hover:text-green-600">
+              <button onClick={isOpen} className="text-green-500 hover:text-green-600">
                 <PlusCircleIcon className="w-10 h-10" />
               </button>
             </div>
