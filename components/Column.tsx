@@ -36,44 +36,49 @@ const Column = ({ id, todos, index }: Props) => {
       </h2>
       
 
-      <Droppable key={id} droppableId ="board" type="task" isDropDisabled={false} isCombineEnabled ={true} ignoreContainerClipping={true} >
+      <Droppable key={id} droppableId={id} type="task" isDropDisabled ={false} isCombineEnabled={true} ignoreContainerClipping={true}>
+  {(provided) => (
+    <div
+      className="space-y-2"
+      ref={provided.innerRef}
+      {...provided.droppableProps}
+    >
+      {todos.map((todo, index) => {
+        if (
+          searchString &&
+          !todo.title.toLowerCase().includes(searchString.toLowerCase())
+        )
+          return null;
 
+        return (
+          <Draggable key={todo.$id} draggableId={todo.$id} index={index}>
+            {(provided) => (
+              <TodoCard
+                todo={todo}
+                index={index}
+                id={id}
+                innerRef={provided.innerRef}
+                draggableProps={provided.draggableProps}
+                draggableHandleProps={provided.dragHandleProps}
+              />
+            )}
+          </Draggable>
+        );
+      })}
+      {provided.placeholder}
 
-        {(provided) => (
-          <div
-            className="space-y-2"
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-          >
-            {todos.map((todo, index) => {
-              if (searchString && !todo.title.toLowerCase().includes(searchString.toLowerCase())) return null;
+      <div className="flex items-end justify-end p-2">
+        <button
+          onClick={openModal}
+          className="text-green-500 hover:text-green-600"
+        >
+          <PlusCircleIcon className="w-10 h-10" />
+        </button>
+      </div>
+    </div>
+  )}
+</Droppable>
 
-              return (
-                <Draggable key={todo.$id} draggableId={todo.$id} index={index}>
-                  {(provided) => (
-                    <TodoCard
-                      todo={todo}
-                      index={index}
-                      id={id}
-                      innerRef={provided.innerRef}
-                      draggableProps={provided.draggableProps}
-                      draggableHandleProps={provided.dragHandleProps}
-                    />
-                  )}
-                </Draggable>
-              );
-            })}
-
-            {provided.placeholder}
-
-            <div className="flex items-end justify-end p-2">
-              <button onClick={openModal} className="text-green-500 hover:text-green-600">
-                <PlusCircleIcon className="w-10 h-10" />
-              </button>
-            </div>
-          </div>
-        )}
-      </Droppable>
     </div>
   );
 };
