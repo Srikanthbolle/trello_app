@@ -20,7 +20,7 @@ const idToColumnText: { [key in TypedColumn]: string } = {
 
 const Column = ({ id, todos, index }: Props) => {
   const searchString = useBoardStore((state) => state.searchString);
-  const isOpen=useModalStore((state)=>state.isOpen)
+  const openModal=useModalStore((state)=>state.openModal)
 
   return (
     <div className="bg-gray-100 rounded-md p-2 shadow-md">
@@ -34,6 +34,7 @@ const Column = ({ id, todos, index }: Props) => {
               ).length}
         </span>
       </h2>
+      
 
       <Droppable key={id} droppableId ="board" type="task" isDropDisabled={false} isCombineEnabled ={true} ignoreContainerClipping={true} >
 
@@ -66,7 +67,7 @@ const Column = ({ id, todos, index }: Props) => {
             {provided.placeholder}
 
             <div className="flex items-end justify-end p-2">
-              <button onClick={isOpen} className="text-green-500 hover:text-green-600">
+              <button onClick={openModal} className="text-green-500 hover:text-green-600">
                 <PlusCircleIcon className="w-10 h-10" />
               </button>
             </div>
