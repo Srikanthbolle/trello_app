@@ -1,18 +1,23 @@
 "use client";
 
-import { Fragment } from "react";
+import { Fragment, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 
 import { shallow } from "zustand/shallow";
 import { useModalStore } from "../Store/ModalStore";
 import { useBoardStore } from "../Store/BoardStore";
 import TaskTypedRadioGroup from "./TaskTypedRadioGroup";
+import Image from "next/image";
+import { PhotoIcon } from "@heroicons/react/16/solid";
 
 function Modal() {
   const isOpen = useModalStore((state) => state.isOpen);
   const closeModal = useModalStore((state) => state.closeModal);
-  const newTaskInput=useBoardStore((state)=>state.newTaskInput)
-  const setNewTaskInput = useBoardStore((state)=>state.setNewTaskInput)
+  const newTaskInput = useBoardStore((state) => state.newTaskInput);
+  const setNewTaskInput = useBoardStore((state) => state.setNewTaskInput);
+  const imagePickerRef = useRef(null);
+  const image = useBoardStore((state) => state.image);
+  const setImage = useBoardStore((state) => state.setImage);
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -37,15 +42,44 @@ function Modal() {
                   Add a Task
                 </Dialog.Title>
                 <div className="mt-2">
-                    <input 
+                  <input
                     type="text"
                     value={newTaskInput}
-                    onChange={(e)=>setNewTaskInput(e.target.value)}
+                    onChange={(e) => setNewTaskInput(e.target.value)}
                     placeholder="Enter a task here ..."
                     className="w-full border border-gray-300 rounded-md outline-none p-5"
-                    />
+                  />
                 </div>
-                 <TaskTypedRadioGroup />
+                <TaskTypedRadioGroup />
+                <div>
+
+                <button className="w-full border border-gray-300 rounded-md outline-none p-5 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
+                  <PhotoIcon className="w-6 h-6 inline-block mr-2"/>
+                  Upload Image
+                </button>
+
+                  {image && (
+                    <Image
+                      width={200}
+                      height={200}
+                      alt="Upload Image"
+                      src={URL.createObjectURL(image)}
+                      className="w-full h-44 object-cover mt-2 filter hover:grayscale transition-all duration-150 cursor-not-allowed"
+                      onClick={()=>{
+                        setImage(null)
+                      }}
+                    />
+                  )}
+                  <input
+                    type="file"
+                    ref={imagePickerRef}
+                    hidden
+                    onChange={(e) => {
+                      if (!e.target.files![0].type.startsWith("image/")) return;
+                      setImage(e.target.files![0]);
+                    }}
+                  />
+                </div>
               </Dialog.Panel>
             </Transition.Child>
           </div>
