@@ -11,14 +11,14 @@ const Board = () => {
   const setBoardState = useBoardStore((state) => state.setBoardState);
   const updateTodoInDB = useBoardStore((state) => state.updateTodoInDB);
 
-  const [hasMounted, setHasMounted] = React.useState(false);
+
 
   useEffect(() => {
-    setHasMounted(true);
+   
     getBoard();
   }, []);
 
-  if (!hasMounted) return null;
+  
 
   const handleOnDragEnd = (result: DropResult) => {
     const { destination, source, type } = result;
@@ -81,7 +81,7 @@ const Board = () => {
               ref={provided.innerRef}
             >
               {Array.from(board.columns.entries()).map(([id, column], index) => (
-                <Column key={`${id}-${index}`} id={id} todos={column.todos} index={index} />
+                <Column key={id} id={id} todos={column.todos} index={index} />
 
               ))}
               {provided.placeholder}

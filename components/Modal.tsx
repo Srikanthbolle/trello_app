@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useRef } from "react";
+import { FormEvent, Fragment, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 
 import { shallow } from "zustand/shallow";
@@ -18,10 +18,21 @@ function Modal() {
   const imagePickerRef = useRef(null);
   const image = useBoardStore((state) => state.image);
   const setImage = useBoardStore((state) => state.setImage);
+  const addTask = useBoardStore((state)=>state.addTask)
+  const setNewTask = useBoardStore((state)=>state.setNewTaskInput)
+const newTaskType = useBoardStore((state)=>state.newTaskType)
+  const handleSubmit=(e:FormEvent<HTMLFormElement>)=>{
+    e.preventDefault();
+    if (!newTaskInput) return;
+    // add task to board
+    addTask(newTaskInput,newTaskType,image)
+    setImage(null)
+    closeModal();
+  }
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="form" onClose={closeModal} className="relative z-50">
+      <Dialog as="form" onClose={closeModal} className="relative z-50" onSubmit={handleSubmit}>
         <div className="fixed inset-0 w-screen overflow-y-auto">
           {/* Container to center the panel */}
           <div className="flex min-h-full items-center justify-center p-4">
@@ -52,11 +63,16 @@ function Modal() {
                 </div>
                 <TaskTypedRadioGroup />
                 <div>
-
-                <button className="w-full border border-gray-300 rounded-md outline-none p-5 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
-                  <PhotoIcon className="w-6 h-6 inline-block mr-2"/>
-                  Upload Image
-                </button>
+                  <button
+                  type="button"
+                    onClick={() => {
+                      imagePickerRef.current?.click();
+                    }}
+                    className="w-full border border-gray-300 rounded-md outline-none p-5 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                  >
+                    <PhotoIcon className="w-6 h-6 inline-block mr-2" />
+                    Upload Image
+                  </button>
 
                   {image && (
                     <Image
@@ -65,8 +81,8 @@ function Modal() {
                       alt="Upload Image"
                       src={URL.createObjectURL(image)}
                       className="w-full h-44 object-cover mt-2 filter hover:grayscale transition-all duration-150 cursor-not-allowed"
-                      onClick={()=>{
-                        setImage(null)
+                      onClick={() => {
+                        setImage(null);
                       }}
                     />
                   )}
@@ -79,6 +95,11 @@ function Modal() {
                       setImage(e.target.files![0]);
                     }}
                   />
+                </div>
+                <div className="mt-4">
+                  <button type="submit" disabled={!newTaskInput} className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:text-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:bg-gray-100 disabled:text-gray-300 disabled:cursor-not-allowed ">
+                    Add Task
+                  </button>
                 </div>
               </Dialog.Panel>
             </Transition.Child>

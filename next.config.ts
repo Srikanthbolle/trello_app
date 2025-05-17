@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images:{
-    domains:["links.papareact.com"],
+    domains:["cloud.appwrite.io","links.papareact.com"],
   }
   /* config options here */
 };
